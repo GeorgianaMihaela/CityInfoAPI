@@ -1,0 +1,27 @@
+﻿using CityInfo.API.Models;
+using Microsoft.AspNetCore.Mvc;
+
+namespace CityInfo.API.Controllers
+{
+    [ApiController]
+    [Route("/api/[controller]")]
+    public class CitiesController : ControllerBase
+    {
+        [HttpGet]
+        public ActionResult<IEnumerator<CityDTO>> GetCities()
+        {
+            return Ok(CitiesDataStore.Current.Cities.Count); 
+        }
+        [HttpGet("{id}")]
+        public ActionResult<CityDTO> GetCity(int id)
+        {
+            // find city 
+            CityDTO? cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id);
+            if (cityToReturn == null)
+            {
+                return NotFound(); ;
+            }
+            return Ok(cityToReturn);
+        }
+    }
+}
