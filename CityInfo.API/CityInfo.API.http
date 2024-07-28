@@ -1,6 +1,6 @@
 
 GET https://localhost:7119/api/cities/
-Accept: application/json
+Accept: application/xml
 
 ###
 
