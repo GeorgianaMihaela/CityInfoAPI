@@ -10,7 +10,7 @@ namespace CityInfo.API.Controllers
         [HttpGet]
         public ActionResult<IEnumerator<CityDTO>> GetCities()
         {
-            return Ok(CitiesDataStore.Current.Cities.Count); 
+            return Ok(CitiesDataStore.Current.Cities); 
         }
         [HttpGet("{id}")]
         public ActionResult<CityDTO> GetCity(int id)
