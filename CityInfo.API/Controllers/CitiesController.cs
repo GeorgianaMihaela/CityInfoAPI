@@ -19,7 +19,7 @@ namespace CityInfo.API.Controllers
             CityDTO? cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == id);
             if (cityToReturn == null)
             {
-                return NotFound(); ;
+                return NotFound(); 
             }
             return Ok(cityToReturn);
         }
