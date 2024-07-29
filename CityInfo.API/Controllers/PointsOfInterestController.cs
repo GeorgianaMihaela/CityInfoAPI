@@ -48,6 +48,8 @@ namespace CityInfo.API.Controllers
         [HttpPost]
         public ActionResult<PointOfInterestDTO> CreatePointOfInterest(int cityId, PointOfInterestForCreationDTO pointOfInterest)
         {
+
+
             // find if the city exists and return Not found if it does not 
             CityDTO? city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
 
