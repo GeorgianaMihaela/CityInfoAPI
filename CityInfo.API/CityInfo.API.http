@@ -9,7 +9,7 @@ Accept: application/json
 
 ###
 
-POST https://localhost:7119/api/cities/1/pointsofinterest
+POST https://localhost:7119/api/cities/5/pointsofinterest
 Content-Type: application/json 
 {
 "name": "Dupa ziduri", 
@@ -47,3 +47,7 @@ Content-Type: application/json
     "path": "/name"
   }
 ]
+
+###
+DELETE https://localhost:7119/api/cities/1/pointsofinterest/2
+Accept: application/json

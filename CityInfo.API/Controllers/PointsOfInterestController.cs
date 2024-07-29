@@ -11,6 +11,13 @@ namespace CityInfo.API.Controllers
     [ApiController]
     public class PointsOfInterestController : ControllerBase
     {
+        // constructor injection is the prefered way to request dependencies 
+        private readonly ILogger<PointsOfInterestController> _logger;
+
+        public PointsOfInterestController(ILogger<PointsOfInterestController> logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
         [HttpGet]
         public ActionResult<IEnumerable<PointOfInterestDTO>> GetPointsOfInterest(int cityid)
         {
@@ -19,6 +26,7 @@ namespace CityInfo.API.Controllers
             CityDTO? cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityid);
             if (cityToReturn == null)
             {
+                _logger.LogWarning($"City with id {cityid} was not found when accessing points of interest"); 
                 return NotFound(); ;
             }
             return Ok(cityToReturn.PointOfInterests);
