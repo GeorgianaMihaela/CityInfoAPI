@@ -49,7 +49,6 @@ namespace CityInfo.API.Controllers
         public ActionResult<PointOfInterestDTO> CreatePointOfInterest(int cityId, PointOfInterestForCreationDTO pointOfInterest)
         {
 
-
             // find if the city exists and return Not found if it does not 
             CityDTO? city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
 
@@ -59,7 +58,7 @@ namespace CityInfo.API.Controllers
             }
 
             // calculate the ID of the new point of interest 
-            int maxPointId = CitiesDataStore.Current.Cities.SelectMany(c=> c.PointOfInterests).Max(p => p.Id);
+            int maxPointId = CitiesDataStore.Current.Cities.SelectMany(c => c.PointOfInterests).Max(p => p.Id);
 
             // map PointofInterestForCreationDTO to PointOfInterestDTO 
             PointOfInterestDTO createdPointOfInterest = new PointOfInterestDTO()
@@ -67,7 +66,7 @@ namespace CityInfo.API.Controllers
                 Id = ++maxPointId,
                 Name = pointOfInterest.Name,
                 Description = pointOfInterest.Description
-            }; 
+            };
 
             // add the new point of interest to the list 
             city.PointOfInterests.Add(createdPointOfInterest);
@@ -77,9 +76,34 @@ namespace CityInfo.API.Controllers
             {
                 cityId = cityId,
                 pointOfInterestId = createdPointOfInterest.Id
-            }, 
+            },
             createdPointOfInterest
-            ); 
+            );
+        }
+
+        [HttpPut("{pointOfInterestId}")]
+        public ActionResult UpdatePointOfInterest(int cityId, int pointOfInterestId, PointOfInterestForUpdateDTO pointOfInterest)
+        {
+            // if we cannot find the city, return not found 
+            CityDTO? city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (city == null)
+            {
+                return NotFound(); ;
+            }
+
+            // check if we find the point of interest which we need to update 
+            // return not found id we do not find it 
+            PointOfInterestDTO? pointOfInterestFromStore = city.PointOfInterests.FirstOrDefault(c => c.Id == pointOfInterestId);
+            if (pointOfInterestFromStore == null)
+            {
+                return NotFound();
+            }
+
+            // PUT should fully update the resource 
+            pointOfInterestFromStore.Name = pointOfInterest.Name;
+            pointOfInterestFromStore.Description = pointOfInterest.Description;
+
+            return NoContent();
         }
     }
 }

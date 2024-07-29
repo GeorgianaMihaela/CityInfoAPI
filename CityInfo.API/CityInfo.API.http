@@ -15,3 +15,12 @@ Content-Type: application/json
 "name": "Dupa ziduri", 
 "description": "In spate la Livada Postei frumos"
 }
+
+###
+
+PUT https://localhost:7119/api/cities/1/pointsofinterest/1
+Content-Type: application/json 
+{
+"name": "Updated - Piata Sfatului", 
+"description": "Updated - cel mai vizitat"
+}
