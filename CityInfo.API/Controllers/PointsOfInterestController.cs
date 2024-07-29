@@ -100,6 +100,7 @@ namespace CityInfo.API.Controllers
             }
 
             // PUT should fully update the resource 
+            // if any field is not sent, we set it to default
             pointOfInterestFromStore.Name = pointOfInterest.Name;
             pointOfInterestFromStore.Description = pointOfInterest.Description;
 
