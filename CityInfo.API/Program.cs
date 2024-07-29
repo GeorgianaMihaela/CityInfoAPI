@@ -6,7 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers(options =>
     options.ReturnHttpNotAcceptable = true
-    ); //.AddXmlDataContractSerializerFormatters(); to add XML format support for the response im case clients ask
+    ).AddNewtonsoftJson(); 
+//.AddXmlDataContractSerializerFormatters(); to add XML format support for the response im case clients ask
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

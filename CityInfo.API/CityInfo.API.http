@@ -24,3 +24,26 @@ Content-Type: application/json
 "name": "Updated - Piata Sfatului", 
 "description": "Updated - cel mai vizitat"
 }
+
+###
+
+PATCH https://localhost:7119/api/cities/1/pointsofinterest/1
+Content-Type: application/json 
+[
+  {
+    "op": "replace", 
+    "path": "/name", 
+    "value": "Updated Piata Sfatului"
+  }
+]
+
+###
+
+PATCH https://localhost:7119/api/cities/1/pointsofinterest/1
+Content-Type: application/json 
+[
+  {
+    "op": "remove", 
+    "path": "/name"
+  }
+]

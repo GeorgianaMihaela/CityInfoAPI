@@ -1,7 +1,9 @@
 ﻿using CityInfo.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
 
 namespace CityInfo.API.Controllers
 {
@@ -104,6 +106,54 @@ namespace CityInfo.API.Controllers
             pointOfInterestFromStore.Name = pointOfInterest.Name;
             pointOfInterestFromStore.Description = pointOfInterest.Description;
 
+            return NoContent();
+        }
+
+        [HttpPatch("{pointOfInterestId}")]
+        public ActionResult PartiallyUpdatePointOfInterest(int cityId, int pointOfInterestId, JsonPatchDocument<PointOfInterestForUpdateDTO> jsonPatchDocument)
+        {
+            // look for the city and send not found in case it does not exist 
+            CityDTO? city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (city == null)
+            {
+                return NotFound();
+            }
+
+            // apply the patch document 
+
+            // first find the point of interest to be updated 
+            // return Not Found if that does not exist 
+            PointOfInterestDTO? pointOfInterestFromStore = city?.PointOfInterests.FirstOrDefault(c => c.Id == pointOfInterestId);
+            if (pointOfInterestFromStore == null)
+            {
+                return NotFound();
+            }
+
+            // map the PointOfInterestDTO to <PointOfInterestForUpdateDTO
+            PointOfInterestForUpdateDTO pointOfInterestToPatch = new PointOfInterestForUpdateDTO()
+            {
+                Name = pointOfInterestFromStore.Name,
+                Description = pointOfInterestFromStore.Description
+            };
+
+            // now we can apply the patch document 
+            jsonPatchDocument.ApplyTo(pointOfInterestToPatch, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); 
+            }
+
+            // make sure that the name is not null after applying the patch document 
+            if (!TryValidateModel(pointOfInterestToPatch))
+            {
+                return BadRequest(ModelState); 
+            }
+
+            pointOfInterestFromStore.Name = pointOfInterestToPatch.Name;
+            pointOfInterestFromStore.Description = pointOfInterestToPatch.Description;
+
+            
             return NoContent();
         }
     }
