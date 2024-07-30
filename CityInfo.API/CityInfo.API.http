@@ -4,7 +4,7 @@ Accept: application/xml
 
 ###
 
-GET https://localhost:7119/api/cities/9
+GET https://localhost:7119/api/cities/9/pointsofinterest
 Accept: application/json
 
 ###
