@@ -18,6 +18,7 @@ namespace CityInfo.API.Controllers
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+
         [HttpGet]
         public ActionResult<IEnumerable<PointOfInterestDTO>> GetPointsOfInterest(int cityid)
         {
