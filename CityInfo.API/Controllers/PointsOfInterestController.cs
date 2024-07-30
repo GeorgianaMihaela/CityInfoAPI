@@ -13,10 +13,12 @@ namespace CityInfo.API.Controllers
     {
         // constructor injection is the prefered way to request dependencies 
         private readonly ILogger<PointsOfInterestController> _logger;
+        private readonly CitiesDataStore _dataStore;
 
-        public PointsOfInterestController(ILogger<PointsOfInterestController> logger)
+        public PointsOfInterestController(ILogger<PointsOfInterestController> logger, CitiesDataStore dataStore)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _dataStore = dataStore;
         }
 
         [HttpGet]
@@ -24,7 +26,7 @@ namespace CityInfo.API.Controllers
         {
             // return 404 when the city with the paased in city id does not exist 
             // find city 
-            CityDTO? cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityid);
+            CityDTO? cityToReturn = _dataStore.Cities.FirstOrDefault(c => c.Id == cityid);
             if (cityToReturn == null)
             {
                 _logger.LogWarning($"City with id {cityid} was not found when accessing points of interest"); 
@@ -39,7 +41,7 @@ namespace CityInfo.API.Controllers
             // return 404 when the city with the paased in city id does not exist 
             // or when the point of interest requested does not exist
             // find city 
-            CityDTO? cityToReturn = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityid);
+            CityDTO? cityToReturn = _dataStore.Cities.FirstOrDefault(c => c.Id == cityid);
             if (cityToReturn == null)
             {
                 return NotFound(); ;
@@ -61,7 +63,7 @@ namespace CityInfo.API.Controllers
         {
 
             // find if the city exists and return Not found if it does not 
-            CityDTO? city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+            CityDTO? city = _dataStore.Cities.FirstOrDefault(c => c.Id == cityId);
 
             if (city == null)
             {
@@ -69,7 +71,7 @@ namespace CityInfo.API.Controllers
             }
 
             // calculate the ID of the new point of interest 
-            int maxPointId = CitiesDataStore.Current.Cities.SelectMany(c => c.PointOfInterests).Max(p => p.Id);
+            int maxPointId = _dataStore.Cities.SelectMany(c => c.PointOfInterests).Max(p => p.Id);
 
             // map PointofInterestForCreationDTO to PointOfInterestDTO 
             PointOfInterestDTO createdPointOfInterest = new PointOfInterestDTO()
@@ -96,7 +98,7 @@ namespace CityInfo.API.Controllers
         public ActionResult UpdatePointOfInterest(int cityId, int pointOfInterestId, PointOfInterestForUpdateDTO pointOfInterest)
         {
             // if we cannot find the city, return not found 
-            CityDTO? city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+            CityDTO? city = _dataStore.Cities.FirstOrDefault(c => c.Id == cityId);
             if (city == null)
             {
                 return NotFound(); ;
@@ -122,7 +124,7 @@ namespace CityInfo.API.Controllers
         public ActionResult PartiallyUpdatePointOfInterest(int cityId, int pointOfInterestId, JsonPatchDocument<PointOfInterestForUpdateDTO> jsonPatchDocument)
         {
             // look for the city and send not found in case it does not exist 
-            CityDTO? city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+            CityDTO? city = _dataStore.Cities.FirstOrDefault(c => c.Id == cityId);
             if (city == null)
             {
                 return NotFound();
@@ -170,7 +172,7 @@ namespace CityInfo.API.Controllers
         public IActionResult DeletePointOfInterest(int cityId, int pointOfInterestId)
         {
             // look for the city and send not found in case it does not exist 
-            CityDTO? city = CitiesDataStore.Current.Cities.FirstOrDefault(c => c.Id == cityId);
+            CityDTO? city = _dataStore.Cities.FirstOrDefault(c => c.Id == cityId);
             if (city == null)
             {
                 return NotFound();
