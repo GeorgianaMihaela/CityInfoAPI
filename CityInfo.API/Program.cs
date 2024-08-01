@@ -44,6 +44,9 @@ builder.Services.AddDbContext<CityInfoContext>(
 // the best lifetime for the repository is scoped 
 builder.Services.AddScoped<ICityInfoRepository, CityInfoRepository>();
 
+// register automapper 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
+    ;
 var app = builder.Build();
 
 // globally handle the exceptions
