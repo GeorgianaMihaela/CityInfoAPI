@@ -81,7 +81,7 @@ namespace CityInfo.API.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("PointOfInterests");
+                    b.ToTable("PointsOfInterest");
 
                     b.HasData(
                         new

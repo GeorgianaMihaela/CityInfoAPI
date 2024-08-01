@@ -19,7 +19,7 @@ namespace CityInfo.API
                     Id = 1,
                     Name = "Brasov",
                     Description = "Where we live", 
-                    PointOfInterests = new List<PointOfInterestDTO>()
+                    PointsOfInterest = new List<PointOfInterestDTO>()
                     {
                         new PointOfInterestDTO()
                         {
@@ -39,7 +39,7 @@ namespace CityInfo.API
                     Id = 2,
                     Name = "Slobozia",
                     Description = "Where  Vique is from",
-                    PointOfInterests = new List<PointOfInterestDTO>()
+                    PointsOfInterest = new List<PointOfInterestDTO>()
                     {
                         new PointOfInterestDTO()
                         {
@@ -60,7 +60,7 @@ namespace CityInfo.API
                     Id = 3,
                     Name = "Pitesti",
                     Description = "Where I am born",
-                    PointOfInterests = new List<PointOfInterestDTO>()
+                    PointsOfInterest = new List<PointOfInterestDTO>()
                     {
                         new PointOfInterestDTO()
                         {

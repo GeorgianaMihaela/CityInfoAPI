@@ -32,7 +32,7 @@ namespace CityInfo.API.Controllers
                 _logger.LogWarning($"City with id {cityid} was not found when accessing points of interest"); 
                 return NotFound(); ;
             }
-            return Ok(cityToReturn.PointOfInterests);
+            return Ok(cityToReturn.PointsOfInterest);
         }
 
         [HttpGet("{pointOfInterestId}", Name = "GetPointOfInterest")]
@@ -48,7 +48,7 @@ namespace CityInfo.API.Controllers
             }
 
             // find point of interest
-            PointOfInterestDTO? pointOfInterestDTO = cityToReturn.PointOfInterests.FirstOrDefault(p => p.Id == pointOfInterestId);
+            PointOfInterestDTO? pointOfInterestDTO = cityToReturn.PointsOfInterest.FirstOrDefault(p => p.Id == pointOfInterestId);
 
             if (pointOfInterestDTO == null)
             {
@@ -71,7 +71,7 @@ namespace CityInfo.API.Controllers
             }
 
             // calculate the ID of the new point of interest 
-            int maxPointId = _dataStore.Cities.SelectMany(c => c.PointOfInterests).Max(p => p.Id);
+            int maxPointId = _dataStore.Cities.SelectMany(c => c.PointsOfInterest).Max(p => p.Id);
 
             // map PointofInterestForCreationDTO to PointOfInterestDTO 
             PointOfInterestDTO createdPointOfInterest = new PointOfInterestDTO()
@@ -82,7 +82,7 @@ namespace CityInfo.API.Controllers
             };
 
             // add the new point of interest to the list 
-            city.PointOfInterests.Add(createdPointOfInterest);
+            city.PointsOfInterest.Add(createdPointOfInterest);
 
             // return a response with Location header 
             return CreatedAtRoute("GetPointOfInterest", new
@@ -106,7 +106,7 @@ namespace CityInfo.API.Controllers
 
             // check if we find the point of interest which we need to update 
             // return not found id we do not find it 
-            PointOfInterestDTO? pointOfInterestFromStore = city.PointOfInterests.FirstOrDefault(c => c.Id == pointOfInterestId);
+            PointOfInterestDTO? pointOfInterestFromStore = city.PointsOfInterest.FirstOrDefault(c => c.Id == pointOfInterestId);
             if (pointOfInterestFromStore == null)
             {
                 return NotFound();
@@ -134,7 +134,7 @@ namespace CityInfo.API.Controllers
 
             // first find the point of interest to be updated 
             // return Not Found if that does not exist 
-            PointOfInterestDTO? pointOfInterestFromStore = city?.PointOfInterests.FirstOrDefault(c => c.Id == pointOfInterestId);
+            PointOfInterestDTO? pointOfInterestFromStore = city?.PointsOfInterest.FirstOrDefault(c => c.Id == pointOfInterestId);
             if (pointOfInterestFromStore == null)
             {
                 return NotFound();
@@ -180,13 +180,13 @@ namespace CityInfo.API.Controllers
 
             // first find the point of interest to be deleted
             // return Not Found if that does not exist 
-            PointOfInterestDTO? pointOfInterestFromStore = city?.PointOfInterests.FirstOrDefault(c => c.Id == pointOfInterestId);
+            PointOfInterestDTO? pointOfInterestFromStore = city?.PointsOfInterest.FirstOrDefault(c => c.Id == pointOfInterestId);
             if (pointOfInterestFromStore == null)
             {
                 return NotFound();
             }
 
-            city.PointOfInterests.Remove(pointOfInterestFromStore);
+            city?.PointsOfInterest.Remove(pointOfInterestFromStore);
 
             return NoContent();
         }

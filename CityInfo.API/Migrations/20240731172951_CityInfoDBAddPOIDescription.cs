@@ -12,7 +12,7 @@ namespace CityInfo.API.Migrations
         {
             migrationBuilder.AddColumn<string>(
                 name: "Description",
-                table: "PointOfInterests",
+                table: "PointsOfInterest",
                 type: "TEXT",
                 maxLength: 200,
                 nullable: true);
@@ -23,7 +23,7 @@ namespace CityInfo.API.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Description",
-                table: "PointOfInterests");
+                table: "PointsOfInterest");
         }
     }
 }

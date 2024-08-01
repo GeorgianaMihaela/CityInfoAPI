@@ -7,14 +7,14 @@
 
         public string? Description { get; set; }
 
-        public List<PointOfInterestDTO> PointOfInterests { get; set; } = new List<PointOfInterestDTO>();
+        public List<PointOfInterestDTO> PointsOfInterest { get; set; } = new List<PointOfInterestDTO>();
         // do not leave this not created to avoid null reference exception 
 
         public int NumberOfPointsOfInterest
         {
             get
             {
-                return PointOfInterests.Count;
+                return PointsOfInterest.Count;
             }
         }
 

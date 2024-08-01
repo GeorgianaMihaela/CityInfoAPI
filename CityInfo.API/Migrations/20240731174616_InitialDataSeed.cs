@@ -23,7 +23,7 @@ namespace CityInfo.API.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "PointOfInterests",
+                table: "PointsOfInterest",
                 columns: new[] { "Id", "CityId", "Description", "Name" },
                 values: new object[,]
                 {
@@ -40,32 +40,32 @@ namespace CityInfo.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DeleteData(
-                table: "PointOfInterests",
+                table: "PointsOfInterest",
                 keyColumn: "Id",
                 keyValue: 1);
 
             migrationBuilder.DeleteData(
-                table: "PointOfInterests",
+                table: "PointsOfInterest",
                 keyColumn: "Id",
                 keyValue: 2);
 
             migrationBuilder.DeleteData(
-                table: "PointOfInterests",
+                table: "PointsOfInterest",
                 keyColumn: "Id",
                 keyValue: 3);
 
             migrationBuilder.DeleteData(
-                table: "PointOfInterests",
+                table: "PointsOfInterest",
                 keyColumn: "Id",
                 keyValue: 4);
 
             migrationBuilder.DeleteData(
-                table: "PointOfInterests",
+                table: "PointsOfInterest",
                 keyColumn: "Id",
                 keyValue: 5);
 
             migrationBuilder.DeleteData(
-                table: "PointOfInterests",
+                table: "PointsOfInterest",
                 keyColumn: "Id",
                 keyValue: 6);
 

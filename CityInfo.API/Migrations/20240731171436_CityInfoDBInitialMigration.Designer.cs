@@ -57,7 +57,7 @@ namespace CityInfo.API.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.ToTable("PointOfInterests");
+                    b.ToTable("PointsOfInterest");
                 });
 
             modelBuilder.Entity("CityInfo.API.Entities.PointOfInterest", b =>
