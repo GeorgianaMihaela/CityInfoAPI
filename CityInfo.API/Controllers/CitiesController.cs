@@ -10,12 +10,7 @@ namespace CityInfo.API.Controllers
     [Route("/api/[controller]")]
     public class CitiesController : ControllerBase
     {
-        // private readonly CitiesDataStore citiesDataStore;
-        //public CitiesController(CitiesDataStore citiesDataStore)
-        //{
-        //    this.citiesDataStore = citiesDataStore;
-        //}
-
+       
         private readonly ICityInfoRepository _cityInfoRepository;
         private readonly IMapper _mapper;
 

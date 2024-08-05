@@ -16,8 +16,6 @@ namespace CityInfo.API.Controllers
     {
         // constructor injection is the prefered way to request dependencies 
         private readonly ILogger<PointsOfInterestController> _logger;
-        //private readonly CitiesDataStore _dataStore;
-
         private readonly ICityInfoRepository _cityInfoRepository;
         private readonly IMapper _mapper;
 
@@ -35,14 +33,6 @@ namespace CityInfo.API.Controllers
         public async Task<ActionResult<IEnumerable<PointOfInterestDTO>>> GetPointsOfInterest(int cityid)
         {
             // return 404 when the city with the paased in city id does not exist 
-            // find city 
-            //CityDTO? cityToReturn = _dataStore.Cities.FirstOrDefault(c => c.Id == cityid);
-            //if (cityToReturn == null)
-            //{
-            //    _logger.LogWarning($"City with id {cityid} was not found when accessing points of interest"); 
-            //    return NotFound(); ;
-            //}
-            //return Ok(cityToReturn.PointsOfInterest);
             if (!await _cityInfoRepository.CityExistsAsync(cityid))
             {
                 _logger.LogInformation($"City with ID {cityid} was not found when accessing points of interest");
@@ -51,6 +41,8 @@ namespace CityInfo.API.Controllers
 
             IEnumerable<PointOfInterest> pointsOfInterestForCity = await _cityInfoRepository.GetPointsOfInterestForCityAsync(cityid);
 
+            // map the points of interest entities to points of interest DTOs
+            // and return OK
             return Ok(_mapper.Map<IEnumerable<PointOfInterestDTO>>(pointsOfInterestForCity));
         }
 
@@ -59,24 +51,8 @@ namespace CityInfo.API.Controllers
         {
             // return 404 when the city with the paased in city id does not exist 
             // or when the point of interest requested does not exist
-            // find city 
-            //CityDTO? cityToReturn = _dataStore.Cities.FirstOrDefault(c => c.Id == cityid);
-            //if (cityToReturn == null)
-            //{
-            //    return NotFound(); ;
-            //}
 
-            //// find point of interest
-            //PointOfInterestDTO? pointOfInterestDTO = cityToReturn.PointsOfInterest.FirstOrDefault(p => p.Id == pointOfInterestId);
-
-            //if (pointOfInterestDTO == null)
-            //{
-            //    return NotFound(); ;
-            //}
-
-            //return Ok(pointOfInterestDTO);
-
-            if(!await _cityInfoRepository.CityExistsAsync(cityid))
+            if (!await _cityInfoRepository.CityExistsAsync(cityid))
             {
                 _logger.LogInformation($"City with ID {cityid} was not found when accessing a point of interest");
                 return NotFound();
@@ -84,7 +60,8 @@ namespace CityInfo.API.Controllers
 
             PointOfInterest? pointOfInterest = await _cityInfoRepository.GetPointOfInterestForCityAsync(cityid, pointOfInterestId);
 
-            if (pointOfInterest == null) {
+            if (pointOfInterest == null)
+            {
                 _logger.LogInformation($"Point of interest with ID {pointOfInterestId} was not found when accessing a point of interest for the city with id {cityid}");
                 return NotFound();
             }
@@ -93,40 +70,31 @@ namespace CityInfo.API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<PointOfInterestDTO> CreatePointOfInterest(int cityId, PointOfInterestForCreationDTO pointOfInterest)
+        public async Task<ActionResult<PointOfInterestDTO>> CreatePointOfInterest(int cityId, PointOfInterestForCreationDTO pointOfInterest)
         {
 
             // find if the city exists and return Not found if it does not 
-            //CityDTO? city = _dataStore.Cities.FirstOrDefault(c => c.Id == cityId);
+            if (!await _cityInfoRepository.CityExistsAsync(cityId))
+            {
+                return NotFound();
+            }
 
-            //if (city == null)
-            //{
-            //    return NotFound(); ;
-            //}
+            PointOfInterest? finalPointOfInterest = _mapper.Map<PointOfInterest>(pointOfInterest);
 
-            //// calculate the ID of the new point of interest 
-            //int maxPointId = _dataStore.Cities.SelectMany(c => c.PointsOfInterest).Max(p => p.Id);
+            // add the point of interest 
+            await _cityInfoRepository.AddPointOfInterestForCityAsync(cityId, finalPointOfInterest);
 
-            //// map PointofInterestForCreationDTO to PointOfInterestDTO 
-            //PointOfInterestDTO createdPointOfInterest = new PointOfInterestDTO()
-            //{
-            //    Id = ++maxPointId,
-            //    Name = pointOfInterest.Name,
-            //    Description = pointOfInterest.Description
-            //};
+            await _cityInfoRepository.SaveChangesAsync();
 
-            //// add the new point of interest to the list 
-            //city.PointsOfInterest.Add(createdPointOfInterest);
-
-            //// return a response with Location header 
-            //return CreatedAtRoute("GetPointOfInterest", new
-            //{
-            //    cityId = cityId,
-            //    pointOfInterestId = createdPointOfInterest.Id
-            //},
-            //createdPointOfInterest
-            //);
-            return Ok();
+            PointOfInterestDTO createdPointOfInterestToReturn = _mapper.Map<PointOfInterestDTO>(finalPointOfInterest);
+            
+            return CreatedAtRoute("GetPointOfInterest",
+                new
+                {
+                    cityId = cityId,
+                    pointOfInterestId = createdPointOfInterestToReturn.Id
+                }, createdPointOfInterestToReturn
+                );
         }
 
         [HttpPut("{pointOfInterestId}")]

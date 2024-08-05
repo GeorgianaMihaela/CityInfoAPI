@@ -52,5 +52,23 @@ namespace CityInfo.API.Services
         {
             return await _context.Cities.AnyAsync(c => c.Id == cityId);
         }
+
+        public async Task AddPointOfInterestForCityAsync(int cityId, PointOfInterest pointOfInterest)
+        {
+            City? city = await GetCityAsync(cityId, false);
+
+            if (city != null)
+            {
+                city.PointsOfInterest.Add(pointOfInterest); 
+                // does not add to the DB yet, just add it to the context
+                // to persist, we need to save changes 
+            }
+        }
+
+        // this is where we persist changes to the DB
+        public async Task<bool> SaveChangesAsync()
+        {
+            return (await _context.SaveChangesAsync() >= 0);
+        }
     }
 }
