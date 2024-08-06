@@ -87,7 +87,7 @@ namespace CityInfo.API.Controllers
             await _cityInfoRepository.SaveChangesAsync();
 
             PointOfInterestDTO createdPointOfInterestToReturn = _mapper.Map<PointOfInterestDTO>(finalPointOfInterest);
-            
+
             return CreatedAtRoute("GetPointOfInterest",
                 new
                 {
@@ -98,27 +98,25 @@ namespace CityInfo.API.Controllers
         }
 
         [HttpPut("{pointOfInterestId}")]
-        public ActionResult UpdatePointOfInterest(int cityId, int pointOfInterestId, PointOfInterestForUpdateDTO pointOfInterest)
+        public async Task<ActionResult> UpdatePointOfInterest(int cityId, int pointOfInterestId, PointOfInterestForUpdateDTO pointOfInterest)
         {
-            // if we cannot find the city, return not found 
-            //CityDTO? city = _dataStore.Cities.FirstOrDefault(c => c.Id == cityId);
-            //if (city == null)
-            //{
-            //    return NotFound(); ;
-            //}
+            // find if the city exists and return Not found if it does not 
+            if (!await _cityInfoRepository.CityExistsAsync(cityId))
+            {
+                return NotFound();
+            }
 
-            //// check if we find the point of interest which we need to update 
-            //// return not found id we do not find it 
-            //PointOfInterestDTO? pointOfInterestFromStore = city.PointsOfInterest.FirstOrDefault(c => c.Id == pointOfInterestId);
-            //if (pointOfInterestFromStore == null)
-            //{
-            //    return NotFound();
-            //}
+            // check if the point of interest which we want to update exists
+            // if not, return Not found 
+            PointOfInterest? pointOfInterestEntity = await _cityInfoRepository.GetPointOfInterestForCityAsync(cityId, pointOfInterestId);
+            if (pointOfInterestEntity == null)
+            {
+                return NotFound();
+            }
 
-            //// PUT should fully update the resource 
-            //// if any field is not sent, we set it to default
-            //pointOfInterestFromStore.Name = pointOfInterest.Name;
-            //pointOfInterestFromStore.Description = pointOfInterest.Description;
+            _mapper.Map(pointOfInterest, pointOfInterestEntity);
+
+            await _cityInfoRepository.SaveChangesAsync();
 
             return NoContent();
         }
@@ -126,46 +124,6 @@ namespace CityInfo.API.Controllers
         [HttpPatch("{pointOfInterestId}")]
         public ActionResult PartiallyUpdatePointOfInterest(int cityId, int pointOfInterestId, JsonPatchDocument<PointOfInterestForUpdateDTO> jsonPatchDocument)
         {
-            // look for the city and send not found in case it does not exist 
-            //CityDTO? city = _dataStore.Cities.FirstOrDefault(c => c.Id == cityId);
-            //if (city == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //// apply the patch document 
-
-            //// first find the point of interest to be updated 
-            //// return Not Found if that does not exist 
-            //PointOfInterestDTO? pointOfInterestFromStore = city?.PointsOfInterest.FirstOrDefault(c => c.Id == pointOfInterestId);
-            //if (pointOfInterestFromStore == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //// map the PointOfInterestDTO to <PointOfInterestForUpdateDTO
-            //PointOfInterestForUpdateDTO pointOfInterestToPatch = new PointOfInterestForUpdateDTO()
-            //{
-            //    Name = pointOfInterestFromStore.Name,
-            //    Description = pointOfInterestFromStore.Description
-            //};
-
-            //// now we can apply the patch document 
-            //jsonPatchDocument.ApplyTo(pointOfInterestToPatch, ModelState);
-
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
-            //}
-
-            //// make sure that the name is not null after applying the patch document 
-            //if (!TryValidateModel(pointOfInterestToPatch))
-            //{
-            //    return BadRequest(ModelState);
-            //}
-
-            //pointOfInterestFromStore.Name = pointOfInterestToPatch.Name;
-            //pointOfInterestFromStore.Description = pointOfInterestToPatch.Description;
 
 
             return NoContent();
@@ -174,22 +132,7 @@ namespace CityInfo.API.Controllers
         [HttpDelete("{pointOfInterestId}")]
         public IActionResult DeletePointOfInterest(int cityId, int pointOfInterestId)
         {
-            // look for the city and send not found in case it does not exist 
-            //CityDTO? city = _dataStore.Cities.FirstOrDefault(c => c.Id == cityId);
-            //if (city == null)
-            //{
-            //    return NotFound();
-            //}
 
-            //// first find the point of interest to be deleted
-            //// return Not Found if that does not exist 
-            //PointOfInterestDTO? pointOfInterestFromStore = city?.PointsOfInterest.FirstOrDefault(c => c.Id == pointOfInterestId);
-            //if (pointOfInterestFromStore == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //city?.PointsOfInterest.Remove(pointOfInterestFromStore);
 
             return NoContent();
         }
