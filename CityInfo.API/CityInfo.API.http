@@ -33,7 +33,7 @@ Content-Type: application/json
   {
     "op": "replace", 
     "path": "/name", 
-    "value": "Updated Piata Sfatului"
+    "value": "Updated Eiffel Tower"
   }
 ]
 

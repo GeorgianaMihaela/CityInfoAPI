@@ -7,8 +7,12 @@ namespace CityInfo.API.Services
 {
     public class CityInfoRepository : ICityInfoRepository
     {
+        // this class deals with the DB operations and uses the Db context 
+        // this is built according to the Repository pattern
+
         private readonly CityInfoContext _context;
 
+        // constructor injection here of the DB context
         public CityInfoRepository(CityInfoContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));

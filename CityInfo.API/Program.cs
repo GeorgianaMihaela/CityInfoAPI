@@ -21,7 +21,7 @@ builder.Host.UseSerilog();
 builder.Services.AddControllers(options =>
     options.ReturnHttpNotAcceptable = true
     ).AddNewtonsoftJson();
-//.AddXmlDataContractSerializerFormatters(); to add XML format support for the response im case clients ask
+//.AddXmlDataContractSerializerFormatters(); to add XML format support for the response in case clients ask
 
 // add user friendly exception message
 builder.Services.AddProblemDetails(); 
