@@ -24,6 +24,23 @@ namespace CityInfo.API.Services
             return await _context.Cities.OrderBy(c => c.Name).ToListAsync();
         }
 
+        // filter cities by name 
+        public async Task<IEnumerable<City>> GetCitiesAsync(string? name)
+        {
+            // if the name is null or empty, return all cities 
+            if (string.IsNullOrEmpty(name))
+            {
+                return await GetCitiesAsync();
+            }
+
+            name = name.Trim(); // get rid of unwanted spaces 
+
+            return await _context.Cities
+                .Where(c => c.Name == name) // filter for the name 
+                .OrderBy(c => c.Name) // order by the name 
+                .ToListAsync(); // here the query is executed 
+        }
+
         // return a certain city and the consumer can decide if the points of interest are returned or not
         public async Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest)
         {
@@ -64,7 +81,7 @@ namespace CityInfo.API.Services
 
             if (city != null)
             {
-                city.PointsOfInterest.Add(pointOfInterest); 
+                city.PointsOfInterest.Add(pointOfInterest);
                 // does not add to the DB yet, just add it to the context
                 // to persist, we need to save changes 
             }

@@ -22,10 +22,11 @@ namespace CityInfo.API.Controllers
             _mapper = mapper ?? throw new ArgumentNullException(nameof(_mapper));
         }
 
+        // filter for name when getting cities 
         [HttpGet]
-        public async Task<ActionResult<IEnumerator<CityWithoutPointsOfInterestDTO>>> GetCities()
+        public async Task<ActionResult<IEnumerator<CityWithoutPointsOfInterestDTO>>> GetCities([FromQuery] string? name)
         {
-            IEnumerable<City> cityEntities = await _cityInfoRepository.GetCitiesAsync();
+            IEnumerable<City> cityEntities = await _cityInfoRepository.GetCitiesAsync(name);
 
             return Ok(_mapper.Map<IEnumerable<CityWithoutPointsOfInterestDTO>>(cityEntities));
         }
