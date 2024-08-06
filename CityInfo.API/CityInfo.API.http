@@ -4,7 +4,7 @@ Accept: application/xml
 
 ###
 
-GET https://localhost:7119/api/cities/9/pointsofinterest
+GET https://localhost:7119/api/cities/1/pointsofinterest
 Accept: application/json
 
 ###
@@ -18,7 +18,7 @@ Content-Type: application/json
 
 ###
 
-PUT https://localhost:7119/api/cities/1/pointsofinterest/1
+PUT https://localhost:7119/api/cities/1/pointsofinterest/6
 Content-Type: application/json 
 {
 "name": "Updated - Piata Sfatului", 

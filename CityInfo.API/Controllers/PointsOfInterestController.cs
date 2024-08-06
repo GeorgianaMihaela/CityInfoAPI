@@ -122,9 +122,47 @@ namespace CityInfo.API.Controllers
         }
 
         [HttpPatch("{pointOfInterestId}")]
-        public ActionResult PartiallyUpdatePointOfInterest(int cityId, int pointOfInterestId, JsonPatchDocument<PointOfInterestForUpdateDTO> jsonPatchDocument)
+        public async Task<ActionResult> PartiallyUpdatePointOfInterest(int cityId, int pointOfInterestId, JsonPatchDocument<PointOfInterestForUpdateDTO> jsonPatchDocument)
         {
+            // find our entity and map it to a DTO, then apply the patch document to that DTO 
+            // check if the city exists, return Not found if not
+            if (!await _cityInfoRepository.CityExistsAsync(cityId))
+            {
+                return NotFound();
+            }
 
+            // check if the point of interest which we want to update exists
+            // if not, return Not found 
+            PointOfInterest? pointOfInterestEntity = await _cityInfoRepository.GetPointOfInterestForCityAsync(cityId, pointOfInterestId);
+            if (pointOfInterestEntity == null)
+            {
+                return NotFound();
+            }
+
+            // map the entity to PointOfInterestToUpdateDTO 
+            PointOfInterestForUpdateDTO pointOfInterestToPatch = _mapper.Map<PointOfInterestForUpdateDTO>(pointOfInterestEntity);
+
+            // apply the patch document to the DTO 
+            jsonPatchDocument.ApplyTo(pointOfInterestToPatch, ModelState);
+
+            // apply validation on the DTO 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!TryValidateModel(pointOfInterestToPatch))
+            {
+                return BadRequest(ModelState);
+            }
+
+            // now the DTO (the model) is valid 
+
+            // map the changes back to the entity 
+            _mapper.Map(pointOfInterestToPatch, pointOfInterestEntity);
+
+            // persist to the database
+            await _cityInfoRepository.SaveChangesAsync();
 
             return NoContent();
         }
