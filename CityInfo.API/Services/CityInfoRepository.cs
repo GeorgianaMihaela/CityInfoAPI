@@ -25,6 +25,7 @@ namespace CityInfo.API.Services
         {
             if (includePointsOfInterest)
             {
+                // the Include from LINQ returns related entities 
                 return await _context.Cities.Include(c => c.PointsOfInterest)
                     .Where(c => c.Id == cityId).FirstOrDefaultAsync();
             }
@@ -69,6 +70,13 @@ namespace CityInfo.API.Services
         public async Task<bool> SaveChangesAsync()
         {
             return (await _context.SaveChangesAsync() >= 0);
+        }
+
+        public void DeletePointOfInterest(PointOfInterest pointOfInterest)
+        {
+            // no need to be async because Delete is not I/O operation 
+            // just call remove on the point of interest DB set 
+            _context.PointOfInterests.Remove(pointOfInterest);
         }
     }
 }

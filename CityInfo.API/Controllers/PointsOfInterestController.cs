@@ -168,9 +168,27 @@ namespace CityInfo.API.Controllers
         }
 
         [HttpDelete("{pointOfInterestId}")]
-        public IActionResult DeletePointOfInterest(int cityId, int pointOfInterestId)
+        public async Task<IActionResult> DeletePointOfInterest(int cityId, int pointOfInterestId)
         {
+            // check if the city exists, return Not found if not
+            if (!await _cityInfoRepository.CityExistsAsync(cityId))
+            {
+                return NotFound();
+            }
 
+            // check if the point of interest which we want to delete exists
+            // if not, return Not found 
+            PointOfInterest? pointOfInterestEntity = await _cityInfoRepository.GetPointOfInterestForCityAsync(cityId, pointOfInterestId);
+            if (pointOfInterestEntity == null)
+            {
+                return NotFound();
+            }
+
+            // delete the point of interest 
+            _cityInfoRepository.DeletePointOfInterest(pointOfInterestEntity); 
+
+            // persist the changes to the DB
+            await _cityInfoRepository.SaveChangesAsync();
 
             return NoContent();
         }
