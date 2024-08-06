@@ -23,10 +23,11 @@ namespace CityInfo.API.Controllers
         }
 
         // filter for name when getting cities 
+        // allow also to search for cities where any field can contain the searchString
         [HttpGet]
-        public async Task<ActionResult<IEnumerator<CityWithoutPointsOfInterestDTO>>> GetCities([FromQuery] string? name)
+        public async Task<ActionResult<IEnumerator<CityWithoutPointsOfInterestDTO>>> GetCities([FromQuery] string? name, [FromQuery] string? searchString)
         {
-            IEnumerable<City> cityEntities = await _cityInfoRepository.GetCitiesAsync(name);
+            IEnumerable<City> cityEntities = await _cityInfoRepository.GetCitiesAsync(name, searchString);
 
             return Ok(_mapper.Map<IEnumerable<CityWithoutPointsOfInterestDTO>>(cityEntities));
         }

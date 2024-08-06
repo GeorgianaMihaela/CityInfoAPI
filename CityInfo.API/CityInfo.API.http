@@ -51,3 +51,8 @@ Content-Type: application/json
 ###
 DELETE https://localhost:7119/api/cities/1/pointsofinterest/2
 Accept: application/json
+
+### 
+
+GET https://localhost:7119/api/Cities?name=Brasov
+Accept: application/json

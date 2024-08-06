@@ -2,6 +2,7 @@
 using CityInfo.API.Entities;
 using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
+using System.Linq;
 
 namespace CityInfo.API.Services
 {
@@ -24,21 +25,36 @@ namespace CityInfo.API.Services
             return await _context.Cities.OrderBy(c => c.Name).ToListAsync();
         }
 
-        // filter cities by name 
-        public async Task<IEnumerable<City>> GetCitiesAsync(string? name)
+        // filter cities by name and allow searching
+        public async Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchString)
         {
             // if the name is null or empty, return all cities 
-            if (string.IsNullOrEmpty(name))
+            // also if the searchString is empty or null, return all cities 
+            if (string.IsNullOrEmpty(name) && string.IsNullOrEmpty(searchString))
             {
                 return await GetCitiesAsync();
             }
 
-            name = name.Trim(); // get rid of unwanted spaces 
+            IQueryable<City> cityCollection = _context.Cities as IQueryable<City>;
 
-            return await _context.Cities
-                .Where(c => c.Name == name) // filter for the name 
-                .OrderBy(c => c.Name) // order by the name 
-                .ToListAsync(); // here the query is executed 
+            // add our filter first 
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                name = name.Trim(); // get rid of unwanted spaces 
+                cityCollection = cityCollection.Where(c => c.Name == name); // filter the cities 
+            }
+
+            // implement the search 
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                searchString = searchString.Trim();
+                // search for the string in all the fields, only if the description is not null 
+                cityCollection = cityCollection.Where(a => a.Name.Contains(searchString)
+                || a.Description != null && a.Description.Contains(searchString));
+            }
+
+            // return a list with the filtered objects 
+            return await cityCollection.OrderBy(c => c.Name).ToListAsync();
         }
 
         // return a certain city and the consumer can decide if the points of interest are returned or not
