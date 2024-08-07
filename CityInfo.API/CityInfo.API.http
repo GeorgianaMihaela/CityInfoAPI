@@ -56,3 +56,8 @@ Accept: application/json
 
 GET https://localhost:7119/api/Cities?name=Brasov
 Accept: application/json
+
+### 
+
+GET https://localhost:7119/api/Cities?searchString=The
+Accept: application/json

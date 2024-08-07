@@ -26,14 +26,15 @@ namespace CityInfo.API.Services
         }
 
         // filter cities by name and allow searching
-        public async Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchString)
+        // allow paging 
+        public async Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchString, int pageNumber, int pageSize)
         {
             // if the name is null or empty, return all cities 
             // also if the searchString is empty or null, return all cities 
-            if (string.IsNullOrEmpty(name) && string.IsNullOrEmpty(searchString))
-            {
-                return await GetCitiesAsync();
-            }
+            // if (string.IsNullOrEmpty(name) && string.IsNullOrEmpty(searchString))
+            // {
+            //     return await GetCitiesAsync();
+            //  } APPLY PAGING NO MATTER WHAT 
 
             IQueryable<City> cityCollection = _context.Cities as IQueryable<City>;
 
@@ -54,7 +55,10 @@ namespace CityInfo.API.Services
             }
 
             // return a list with the filtered objects 
-            return await cityCollection.OrderBy(c => c.Name).ToListAsync();
+            return await cityCollection.OrderBy(c => c.Name)
+                .Skip(pageSize * (pageNumber - 1)) // add paging to the collection right before query gets sent to the DB
+                .Take(pageSize)
+                .ToListAsync(); // callinf ToListAsync sends the query to the DB and this query gets executed (deferred execution)
         }
 
         // return a certain city and the consumer can decide if the points of interest are returned or not
