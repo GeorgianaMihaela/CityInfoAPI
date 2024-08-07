@@ -1,6 +1,6 @@
 
 GET https://localhost:7119/api/cities/
-Accept: application/xml
+Accept: application/json
 
 ###
 
@@ -60,4 +60,9 @@ Accept: application/json
 ### 
 
 GET https://localhost:7119/api/Cities?searchString=The
+Accept: application/json
+
+###
+
+GET https://localhost:7119/api/cities/?pageSize=3&pageNumber=3
 Accept: application/json

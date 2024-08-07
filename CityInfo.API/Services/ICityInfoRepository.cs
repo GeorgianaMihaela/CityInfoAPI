@@ -6,7 +6,9 @@ namespace CityInfo.API.Services
     {
         Task<IEnumerable<City>> GetCitiesAsync();
 
-        Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchString, int pageNumber, int pageSize);
+        // this returns a Tuple: 
+        // - (Collection of Cities, PaginationMetadata)
+        Task<(IEnumerable<City>, PaginationMetadata)> GetCitiesAsync(string? name, string? searchString, int pageNumber, int pageSize);
 
         Task<City?> GetCityAsync(int cityId, bool includePointsOfInterest); 
 

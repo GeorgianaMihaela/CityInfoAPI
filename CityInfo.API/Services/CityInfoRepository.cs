@@ -27,7 +27,7 @@ namespace CityInfo.API.Services
 
         // filter cities by name and allow searching
         // allow paging 
-        public async Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchString, int pageNumber, int pageSize)
+        public async Task<(IEnumerable<City>, PaginationMetadata)> GetCitiesAsync(string? name, string? searchString, int pageNumber, int pageSize)
         {
             // if the name is null or empty, return all cities 
             // also if the searchString is empty or null, return all cities 
@@ -54,11 +54,18 @@ namespace CityInfo.API.Services
                 || a.Description != null && a.Description.Contains(searchString));
             }
 
-            // return a list with the filtered objects 
-            return await cityCollection.OrderBy(c => c.Name)
-                .Skip(pageSize * (pageNumber - 1)) // add paging to the collection right before query gets sent to the DB
-                .Take(pageSize)
-                .ToListAsync(); // callinf ToListAsync sends the query to the DB and this query gets executed (deferred execution)
+            int totalItemCount = await cityCollection.CountAsync(); // database call to get total amount of items
+
+            PaginationMetadata paginationMetadata = new PaginationMetadata(totalItemCount, pageSize, pageNumber);
+
+            // a list to e returned with the filtered objects and paging 
+            List<City> collectionToReturn = await cityCollection.OrderBy(c => c.Name)
+                 .Skip(pageSize * (pageNumber - 1)) // add paging to the collection right before query gets sent to the DB
+                 .Take(pageSize)
+                 .ToListAsync(); // calling ToListAsync sends the query to the DB and this query gets executed (deferred execution)
+        
+            return (collectionToReturn, paginationMetadata);
+        
         }
 
         // return a certain city and the consumer can decide if the points of interest are returned or not
